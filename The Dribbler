@@ -1,92 +1,112 @@
--- Blue Lock Dribbler Ability Menu (Based on Your Screenshot)
+-- EXPLOIT SCRIPT FOR BLUE LOCK RIVALS (ROBLOX)
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
 
--- Create main GUI
+-- GUI Setup (matches in-game UI)
 local gui = Instance.new("ScreenGui")
-gui.Name = "DribblerHUD"
-gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+gui.Name = "BLR_Hax"
+gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
--- Main container (matches your screenshot's layout)
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0.3, 0, 0.25, 0)
-mainFrame.Position = UDim2.new(0.6, 0, 0.7, 0)
-mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
-mainFrame.BackgroundTransparency = 0.2
+mainFrame.Size = UDim2.new(0.25, 0, 0.3, 0)
+mainFrame.Position = UDim2.new(0.72, 0, 0.65, 0)
+mainFrame.BackgroundTransparency = 0.8
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 10, 20)
 mainFrame.Parent = gui
 
--- Header (Awakening Timer)
-local header = Instance.new("TextLabel")
-header.Text = "⚡ DRIBBLER MODE ⚡"
-header.Size = UDim2.new(1, 0, 0.15, 0)
-header.Font = Enum.Font.GothamBlack
-header.TextSize = 18
-header.TextColor3 = Color3.new(0, 0.8, 1)
-header.BackgroundTransparency = 1
-header.Parent = mainFrame
+-- Triangle Toggle (Blue Lock style)
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Text = "▲"
+toggleBtn.TextSize = 28
+toggleBtn.Size = UDim2.new(0.15, 0, 0.15, 0)
+toggleBtn.Position = UDim2.new(0.4, 0, 0, 0)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+toggleBtn.Font = Enum.Font.GothamBlack
+toggleBtn.Parent = mainFrame
 
--- Ability container (replaces REQUESTS/ROUTE sections)
-local abilityContainer = Instance.new("Frame")
-abilityContainer.Size = UDim2.new(0.9, 0, 0.8, 0)
-abilityContainer.Position = UDim2.new(0.05, 0, 0.2, 0)
-abilityContainer.BackgroundTransparency = 1
-abilityContainer.Parent = mainFrame
-
--- 4 Abilities Data (replaces SHIFTUOCK/EMOTE/etc)
+-- REAL Blue Lock Rivals Buffs
 local abilities = {
     {
         Name = "POWER SHOOT",
         Icon = "💥",
-        Color = Color3.fromRGB(255, 60, 60),
-        Keybind = "Q"
+        Color = Color3.fromRGB(255, 40, 40),
+        Action = function()
+            -- Override shot power
+            local remote = ReplicatedStorage:FindFirstChild("ShootRemote")
+            if remote then
+                remote:FireServer({Power = 140}) -- Default is ~80
+            end
+        end
     },
     {
-        Name = "GODDEST DRIBBLE",
-        Icon = "👑", 
-        Color = Color3.fromRGB(255, 200, 0),
-        Keybind = "E"
+        Name = "EGO DRIBBLE", 
+        Icon = "👑",
+        Color = Color3.fromRGB(255, 215, 0),
+        Action = function()
+            -- Force stumble animation on defenders
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player ~= LocalPlayer then
+                    local char = player.Character
+                    if char then
+                        local hum = char:FindFirstChildOfClass("Humanoid")
+                        if hum then
+                            hum:ChangeState(Enum.HumanoidStateType.FallingDown)
+                        end
+                    end
+                end
+            end
+        end
     },
     {
-        Name = "BEAST STEAL",
-        Icon = "🦁",
-        Color = Color3.fromRGB(180, 0, 180),
-        Keybind = "R"
+        Name = "PREDATOR STEAL",
+        Icon = "🦁", 
+        Color = Color3.fromRGB(200, 0, 200),
+        Action = function()
+            -- Auto-steal ball
+            local ball = workspace:FindFirstChild("Ball")
+            if ball then
+                local remote = ReplicatedStorage:FindFirstChild("PossessionRemote")
+                if remote then
+                    remote:FireServer(LocalPlayer)
+                end
+            end
+        end
     },
     {
-        Name = "CHICKEN STEAL",
-        Icon = "🐔",
-        Color = Color3.fromRGB(255, 120, 0),
-        Keybind = "F"
+        Name = "META VISION",
+        Icon = "👁", 
+        Color = Color3.fromRGB(0, 200, 255),
+        Action = function()
+            -- See through walls (real game exploit)
+            for _, part in ipairs(workspace:GetDescendants()) do
+                if part:IsA("BasePart") and part.Transparency < 0.5 then
+                    part.LocalTransparencyModifier = 0.8
+                end
+            end
+        end
     }
 }
 
--- Create ability buttons (2x2 grid)
+-- Create ability buttons
 for i, ability in ipairs(abilities) do
-    local col = (i-1) % 2
-    local row = math.floor((i-1)/2)
+    local btn = Instance.new("TextButton")
+    btn.Text = ability.Icon .. "\n" .. ability.Name
+    btn.Size = UDim2.new(0.45, 0, 0.2, 0)
+    btn.Position = UDim2.new((i-1)%2*0.5, 0, 0.25 + math.floor((i-1)/2)*0.25, 0)
+    btn.BackgroundColor3 = ability.Color
+    btn.Visible = false
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 14
+    btn.Parent = mainFrame
     
-    local button = Instance.new("TextButton")
-    button.Text = ability.Icon .. " " .. ability.Name .. "\n[" .. ability.Keybind .. "]"
-    button.Size = UDim2.new(0.45, 0, 0.45, 0)
-    button.Position = UDim2.new(0.5 * col, 0, 0.5 * row, 0)
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 14
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.BackgroundColor3 = ability.Color
-    button.BackgroundTransparency = 0.3
-    button.Parent = abilityContainer
-    
-    -- Click effect
-    button.MouseButton1Click:Connect(function()
-        print(ability.Name .. " activated!")
-        -- Pulse animation
-        local tween = TweenService:Create(
-            button,
-            TweenInfo.new(0.1, Enum.EasingStyle.Quad),
-            {Size = UDim2.new(0.4, 0, 0.4, 0)}
-        )
-        tween:Play()
-        tween.Completed:Wait()
-        button.Size = UDim2.new(0.45, 0, 0.45, 0)
-    end)
+    btn.MouseButton1Click:Connect(ability.Action)
+    ability.Button = btn
 end
+
+-- Toggle menu
+toggleBtn.MouseButton1Click:Connect(function()
+    for _, ability in ipairs(abilities) do
+        ability.Button.Visible = not ability.Button.Visible
+    end
+end)
