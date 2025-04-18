@@ -1,112 +1,32 @@
--- EXPLOIT SCRIPT FOR BLUE LOCK RIVALS (ROBLOX)
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local LocalPlayer = Players.LocalPlayer
+-- Example Roblox Lua-like pseudocode for abilities  
 
--- GUI Setup (matches in-game UI)
-local gui = Instance.new("ScreenGui")
-gui.Name = "BLR_Hax"
-gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+local Players = game:GetService("Players")  
+local Abilities = {  
+   ["Isagi"] = {  
+      LeftShoot = function(player)  
+         -- Code for curved shot physics  
+      end,  
+      DirectShoot = function(player)  
+         -- Instant shot logic  
+      end,  
+      Awakening = "Final Shot" -- One-time super move  
+   },  
+   ["Sae"] = {  
+      Metavision = function(player)  
+         -- Highlights opponent weaknesses  
+      end,  
+      Awakening = "You’ll Never Surpass Me" -- Disables enemy skills  
+   }  
+}  
 
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0.25, 0, 0.3, 0)
-mainFrame.Position = UDim2.new(0.72, 0, 0.65, 0)
-mainFrame.BackgroundTransparency = 0.8
-mainFrame.BackgroundColor3 = Color3.fromRGB(0, 10, 20)
-mainFrame.Parent = gui
-
--- Triangle Toggle (Blue Lock style)
-local toggleBtn = Instance.new("TextButton")
-toggleBtn.Text = "▲"
-toggleBtn.TextSize = 28
-toggleBtn.Size = UDim2.new(0.15, 0, 0.15, 0)
-toggleBtn.Position = UDim2.new(0.4, 0, 0, 0)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
-toggleBtn.Font = Enum.Font.GothamBlack
-toggleBtn.Parent = mainFrame
-
--- REAL Blue Lock Rivals Buffs
-local abilities = {
-    {
-        Name = "POWER SHOOT",
-        Icon = "💥",
-        Color = Color3.fromRGB(255, 40, 40),
-        Action = function()
-            -- Override shot power
-            local remote = ReplicatedStorage:FindFirstChild("ShootRemote")
-            if remote then
-                remote:FireServer({Power = 140}) -- Default is ~80
-            end
-        end
-    },
-    {
-        Name = "EGO DRIBBLE", 
-        Icon = "👑",
-        Color = Color3.fromRGB(255, 215, 0),
-        Action = function()
-            -- Force stumble animation on defenders
-            for _, player in ipairs(Players:GetPlayers()) do
-                if player ~= LocalPlayer then
-                    local char = player.Character
-                    if char then
-                        local hum = char:FindFirstChildOfClass("Humanoid")
-                        if hum then
-                            hum:ChangeState(Enum.HumanoidStateType.FallingDown)
-                        end
-                    end
-                end
-            end
-        end
-    },
-    {
-        Name = "PREDATOR STEAL",
-        Icon = "🦁", 
-        Color = Color3.fromRGB(200, 0, 200),
-        Action = function()
-            -- Auto-steal ball
-            local ball = workspace:FindFirstChild("Ball")
-            if ball then
-                local remote = ReplicatedStorage:FindFirstChild("PossessionRemote")
-                if remote then
-                    remote:FireServer(LocalPlayer)
-                end
-            end
-        end
-    },
-    {
-        Name = "META VISION",
-        Icon = "👁", 
-        Color = Color3.fromRGB(0, 200, 255),
-        Action = function()
-            -- See through walls (real game exploit)
-            for _, part in ipairs(workspace:GetDescendants()) do
-                if part:IsA("BasePart") and part.Transparency < 0.5 then
-                    part.LocalTransparencyModifier = 0.8
-                end
-            end
-        end
-    }
-}
-
--- Create ability buttons
-for i, ability in ipairs(abilities) do
-    local btn = Instance.new("TextButton")
-    btn.Text = ability.Icon .. "\n" .. ability.Name
-    btn.Size = UDim2.new(0.45, 0, 0.2, 0)
-    btn.Position = UDim2.new((i-1)%2*0.5, 0, 0.25 + math.floor((i-1)/2)*0.25, 0)
-    btn.BackgroundColor3 = ability.Color
-    btn.Visible = false
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 14
-    btn.Parent = mainFrame
-    
-    btn.MouseButton1Click:Connect(ability.Action)
-    ability.Button = btn
-end
-
--- Toggle menu
-toggleBtn.MouseButton1Click:Connect(function()
-    for _, ability in ipairs(abilities) do
-        ability.Button.Visible = not ability.Button.Visible
-    end
-end)
+-- Triggering Abilities  
+Players.PlayerAdded:Connect(function(player)  
+   player.CharacterAdded:Connect(function(character)  
+      local humanoid = character:WaitForChild("Humanoid")  
+      humanoid:GetPropertyChangedSignal("Jump"):Connect(function()  
+         if player.SelectedAbility == "DragonDrive" then  
+            -- Shidou’s aerial shot  
+         end  
+      end)  
+   end)  
+end)  
