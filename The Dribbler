@@ -1,128 +1,102 @@
---[[ 
-  🌈 BLUE LOCK EXPLOIT GUI 🌈
-  - Mobile-friendly
-  - No cooldowns
-  - 100% broken abilities
+--[[
+⚡ BLUE LOCK: DRIBBLER ABILITY MENU ⚡
+- Step 1: Single "The Dribbler" button
+- Step 2: Expands to show 4 abilities
+- No cooldowns, mobile-friendly
 --]]
 
--- GUI Setup
 local gui = Instance.new("ScreenGui")
-gui.Name = "BlueLockHax"
+gui.Name = "DribblerMenu"
 gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
--- Main Frame (Rainbow Background)
+-- Main Frame (Minimalist)
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0.8, 0, 0.9, 0)
-mainFrame.Position = UDim2.new(0.1, 0, 0.05, 0)
-mainFrame.BackgroundColor3 = Color3.new(1, 0, 1)
-mainFrame.BackgroundTransparency = 0.2
+mainFrame.Size = UDim2.new(0.3, 0, 0.15, 0)
+mainFrame.Position = UDim2.new(0.35, 0, 0.8, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 40)
 mainFrame.Parent = gui
 
--- Rainbow Animation (Visual Effect)
-spawn(function()
-    while true do
-        for i = 0, 1, 0.01 do
-            mainFrame.BackgroundColor3 = Color3.fromHSV(i, 1, 1)
-            wait(0.05)
-        end
-    end
-end)
-
--- Title Text
-local title = Instance.new("TextLabel")
-title.Text = "💎 BLUE LOCK GOD MODE 💎"
-title.Size = UDim2.new(1, 0, 0.1, 0)
-title.Font = Enum.Font.Impact
-title.TextSize = 24
-title.TextColor3 = Color3.new(1, 1, 1)
-title.Parent = mainFrame
-
--- Category: "Custom Style"
-local customStyle = Instance.new("TextButton")
-customStyle.Text = "⚡ CUSTOM STYLE ⚡"
-customStyle.Size = UDim2.new(0.9, 0, 0.2, 0)
-customStyle.Position = UDim2.new(0.05, 0, 0.15, 0)
-customStyle.Font = Enum.Font.Fantasy
-customStyle.TextSize = 20
-customStyle.Parent = mainFrame
-
--- Button: "The Dribbler"
+-- Phase 1: The Dribbler Button (Collapsed)
 local dribblerButton = Instance.new("TextButton")
-dribblerButton.Text = "🔥 THE DRIBBLER 🔥"
-dribblerButton.Size = UDim2.new(0.8, 0, 0.15, 0)
-dribblerButton.Position = UDim2.new(0.1, 0, 0.4, 0)
-dribblerButton.Font = Enum.Font.SciFi
-dribblerButton.TextColor3 = Color3.new(0, 1, 1)
+dribblerButton.Text = "[ THE DRIBBLER ]"
+dribblerButton.Size = UDim2.new(1, 0, 1, 0)
+dribblerButton.Font = Enum.Font.GothamBlack
+dribblerButton.TextColor3 = Color3.new(0, 0.8, 1)
+dribblerButton.BackgroundColor3 = Color3.fromRGB(40, 40, 80)
 dribblerButton.Parent = mainFrame
 
--- ABILITIES MENU (Appears when clicked)
-local abilitiesFrame = Instance.new("Frame")
-abilitiesFrame.Size = UDim2.new(0.9, 0, 0.6, 0)
-abilitiesFrame.Position = UDim2.new(0.05, 0, 0.6, 0)
-abilitiesFrame.Visible = false
-abilitiesFrame.Parent = mainFrame
+-- Phase 2: Ability Grid (Hidden Initially)
+local abilityFrame = Instance.new("Frame")
+abilityFrame.Size = UDim2.new(1.5, 0, 2.5, 0)
+abilityFrame.Position = UDim2.new(-0.25, 0, -1.5, 0)
+abilityFrame.BackgroundTransparency = 1
+abilityFrame.Visible = false
+abilityFrame.Parent = mainFrame
 
--- Power Shoot Ability
-local powerShoot = Instance.new("TextButton")
-powerShoot.Text = "💥 POWER SHOOT (140mph)"
-powerShoot.Size = UDim2.new(0.9, 0, 0.2, 0)
-powerShoot.Position = UDim2.new(0.05, 0, 0.05, 0)
-powerShoot.Parent = abilitiesFrame
-
-powerShoot.MouseButton1Click:Connect(function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.BallVelocity.Value = Vector3.new(0, 0, 140)
-    -- VFX: Explosion & Screen Shake (fake)
-    print("BOOM! GOAL BROKEN!")
-end)
-
--- Goddest Dribbling
-local godDribble = Instance.new("TextButton")
-godDribble.Text = "👑 GODDEST DRIBBLE"
-godDribble.Size = UDim2.new(0.9, 0, 0.2, 0)
-godDribble.Position = UDim2.new(0.05, 0, 0.3, 0)
-godDribble.Parent = abilitiesFrame
-
-godDribble.MouseButton1Click:Connect(function()
-    -- Fake "ankle break" effect
-    for _, player in pairs(game.Players:GetPlayers()) do
-        if player ~= game.Players.LocalPlayer then
-            player.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+-- 4 Abilities Data
+local abilities = {
+    {
+        Name = "💥 POWER SHOOT",
+        Color = Color3.fromRGB(255, 60, 60),
+        Action = function()
+            print("140mph UNSTOPPABLE SHOT!")
         end
-    end
-    print("ANKLE BREAKER ACTIVATED!")
-end)
-
--- Beast Steal
-local beastSteal = Instance.new("TextButton")
-beastSteal.Text = "🦁 BEAST STEAL (100%)"
-beastSteal.Size = UDim2.new(0.9, 0, 0.2, 0)
-beastSteal.Position = UDim2.new(0.05, 0, 0.55, 0)
-beastSteal.Parent = abilitiesFrame
-
-beastSteal.MouseButton1Click:Connect(function()
-    -- Guaranteed steal
-    game.Players.LocalPlayer.Character.BallOwner.Value = true
-    print("BALL STOLEN! ROAR!")
-end)
-
--- Chicken Steal
-local chickenSteal = Instance.new("TextButton")
-chickenSteal.Text = "🐔 CHICKEN STEAL (SHAME)"
-chickenSteal.Size = UDim2.new(0.9, 0, 0.2, 0)
-chickenSteal.Position = UDim2.new(0.05, 0, 0.8, 0)
-chickenSteal.Parent = abilitiesFrame
-
-chickenSteal.MouseButton1Click:Connect(function()
-    -- Fake "embarrassing" steal
-    for _, player in pairs(game.Players:GetPlayers()) do
-        if player ~= game.Players.LocalPlayer then
-            player.Character.Humanoid.Sit = true -- Makes them sit (fake "cluck" effect)
+    },
+    {
+        Name = "👑 GODDEST DRIBBLE", 
+        Color = Color3.fromRGB(255, 215, 0),
+        Action = function()
+            print("DEFENDERS ANKLE BROKEN!")
         end
-    end
-    print("CLUCK CLUCK! BALL PEECKED!")
-end)
+    },
+    {
+        Name = "🦁 BEAST STEAL",
+        Color = Color3.fromRGB(180, 0, 180),
+        Action = function()
+            print("100% BALL STEAL!")
+        end
+    },
+    {
+        Name = "🐔 CHICKEN STEAL",
+        Color = Color3.fromRGB(255, 165, 0),
+        Action = function()
+            print("SHAMEFUL STEAL ACTIVATED!")
+        end
+    }
+}
+
+-- Create Ability Buttons
+for i, ability in ipairs(abilities) do
+    local col = (i-1) % 2
+    local row = math.floor((i-1)/2)
+    
+    local button = Instance.new("TextButton")
+    button.Text = ability.Name
+    button.Size = UDim2.new(0.45, 0, 0.45, 0)
+    button.Position = UDim2.new(0.5 * col, 0, 0.5 * row, 0)
+    button.Font = Enum.Font.GothamBold
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = ability.Color
+    button.Parent = abilityFrame
+    
+    button.MouseButton1Click:Connect(function()
+        ability.Action()
+        -- Pulse animation
+        button.Size = UDim2.new(0.4, 0, 0.4, 0)
+        task.wait(0.1)
+        button.Size = UDim2.new(0.45, 0, 0.45, 0)
+    end)
+end
 
 -- Toggle Abilities Menu
 dribblerButton.MouseButton1Click:Connect(function()
-    abilitiesFrame.Visible = not abilitiesFrame.Visible
+    abilityFrame.Visible = not abilityFrame.Visible
+    -- Resize main frame when expanded
+    if abilityFrame.Visible then
+        mainFrame.Size = UDim2.new(1.5, 0, 2.5, 0)
+        mainFrame.Position = UDim2.new(0.2, 0, 0.6, 0)
+    else
+        mainFrame.Size = UDim2.new(0.3, 0, 0.15, 0)
+        mainFrame.Position = UDim2.new(0.35, 0, 0.8, 0)
+    end
 end)
