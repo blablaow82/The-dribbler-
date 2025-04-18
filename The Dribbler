@@ -1,32 +1,84 @@
--- Example Roblox Lua-like pseudocode for abilities  
+local AbilityModule = {}
 
-local Players = game:GetService("Players")  
-local Abilities = {  
-   ["Isagi"] = {  
-      LeftShoot = function(player)  
-         -- Code for curved shot physics  
-      end,  
-      DirectShoot = function(player)  
-         -- Instant shot logic  
-      end,  
-      Awakening = "Final Shot" -- One-time super move  
-   },  
-   ["Sae"] = {  
-      Metavision = function(player)  
-         -- Highlights opponent weaknesses  
-      end,  
-      Awakening = "You’ll Never Surpass Me" -- Disables enemy skills  
-   }  
-}  
+-- Left Shoot (Isagi)
+function AbilityModule.LeftShoot(player)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChild("Humanoid")
+    if humanoid then
+        print(player.Name .. " used LEFT SHOOT! (Curved shot)")
+        -- Add curved shot physics logic here
+    end
+end
 
--- Triggering Abilities  
-Players.PlayerAdded:Connect(function(player)  
-   player.CharacterAdded:Connect(function(character)  
-      local humanoid = character:WaitForChild("Humanoid")  
-      humanoid:GetPropertyChangedSignal("Jump"):Connect(function()  
-         if player.SelectedAbility == "DragonDrive" then  
-            -- Shidou’s aerial shot  
-         end  
-      end)  
-   end)  
-end)  
+-- Metavision (Sae)
+function AbilityModule.Metavision(player)
+    print(player.Name .. " activated META VISION! (See weak points)")
+    -- Highlight opponents' weaknesses (use BillboardGui or Highlight)
+end
+
+-- Dash (Isagi)
+function AbilityModule.Dash(player)
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChild("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = 50 -- Super speed for 3 seconds
+        wait(3)
+        humanoid.WalkSpeed = 16 -- Reset
+    end
+end
+
+-- Dragon Drive (Shidou)
+function AbilityModule.DragonDrive(player)
+    print(player.Name .. " used DRAGON DRIVE! (Mid-air volley)")
+    -- Add acrobatic shot logic here
+end
+
+-- Awakening: "You’ll Never Surpass Me" (Sae)
+function AbilityModule.SaeAwakening(player)
+    print(player.Name .. ": 'YOU’LL NEVER SURPASS ME!' (Ability Lock)")
+    -- Disable opponents' skills temporarily
+end
+
+return AbilityModule
+local button = script.Parent
+local clickDetector = button:FindFirstChild("ClickDetector") or Instance.new("ClickDetector", button)
+local AbilityModule = require(game.ServerScriptService.AbilityModule)
+
+clickDetector.MouseClick:Connect(function(player)
+    -- Check if player already has abilities
+    if not player:FindFirstChild("HasBlueLockAbilities") then
+        local marker = Instance.new("BoolValue", player)
+        marker.Name = "HasBlueLockAbilities"
+        
+        -- Grant all abilities
+        AbilityModule.LeftShoot(player)
+        AbilityModule.Metavision(player)
+        AbilityModule.Dash(player)
+        AbilityModule.DragonDrive(player)
+        
+        -- Notify player
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "BLUE LOCK POWER UP!",
+            Text = "You unlocked ALL ABILITIES!",
+            Duration = 5,
+        })
+        
+        -- Awakening skills (optional, could be triggered later)
+        player.Chatted:Connect(function(msg)
+            if msg == "/awaken" then
+                AbilityModule.SaeAwakening(player)
+            end
+        end)
+    else
+        print(player.Name .. " already has abilities!")
+    end
+end)
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+player:GetPropertyChangedSignal("HasBlueLockAbilities"):Connect(function()
+    if player:FindFirstChild("HasBlueLockAbilities") then
+        -- Play a VFX or UI effect
+        print("Abilities loaded!")
+    end
+end)
