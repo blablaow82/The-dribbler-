@@ -1,0 +1,84 @@
+--// Create the main GUI
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local CloseButton = Instance.new("TextButton")
+local PlayerInput = Instance.new("TextBox")
+local TpButton = Instance.new("TextButton")
+local OpenIcon = Instance.new("TextButton")
+
+--// Parent GUI to CoreGui (bypasses visibility)
+ScreenGui.Parent = game.CoreGui
+ScreenGui.Name = "TeleportGUI"
+
+--// Main Frame
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 300, 0, 200)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+--// Close Button
+CloseButton.Name = "CloseButton"
+CloseButton.Text = "X"
+CloseButton.Size = UDim2.new(0, 25, 0, 25)
+CloseButton.Position = UDim2.new(1, -30, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.TextColor3 = Color3.new(1, 1, 1)
+CloseButton.Parent = MainFrame
+
+--// Username Input
+PlayerInput.Name = "PlayerInput"
+PlayerInput.PlaceholderText = "Player username"
+PlayerInput.Size = UDim2.new(0, 260, 0, 40)
+PlayerInput.Position = UDim2.new(0, 20, 0, 50)
+PlayerInput.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+PlayerInput.TextColor3 = Color3.new(1, 1, 1)
+PlayerInput.ClearTextOnFocus = false
+PlayerInput.Parent = MainFrame
+
+--// Teleport Button
+TpButton.Name = "TpButton"
+TpButton.Text = "🔘 Tp to player"
+TpButton.Size = UDim2.new(0, 260, 0, 40)
+TpButton.Position = UDim2.new(0, 20, 0, 110)
+TpButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+TpButton.TextColor3 = Color3.new(1, 1, 1)
+TpButton.Parent = MainFrame
+
+--// Open Icon Button (Initially hidden)
+OpenIcon.Name = "OpenIcon"
+OpenIcon.Text = "🧭"
+OpenIcon.Size = UDim2.new(0, 40, 0, 40)
+OpenIcon.Position = UDim2.new(0, 10, 0, 10)
+OpenIcon.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+OpenIcon.TextColor3 = Color3.new(1, 1, 1)
+OpenIcon.Visible = false
+OpenIcon.Parent = ScreenGui
+
+--// Close and open toggle
+CloseButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    OpenIcon.Visible = true
+end)
+
+OpenIcon.MouseButton1Click:Connect(function()
+    MainFrame.Visible = true
+    OpenIcon.Visible = false
+end)
+
+--// Teleport function
+TpButton.MouseButton1Click:Connect(function()
+    local playerName = PlayerInput.Text
+    local targetPlayer = game.Players:FindFirstChild(playerName)
+    local localPlayer = game.Players.LocalPlayer
+
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            localPlayer.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame
+        end
+    else
+        warn("Invalid player name or player is not loaded.")
+    end
+end)
