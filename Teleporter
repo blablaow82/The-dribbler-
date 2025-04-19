@@ -1,4 +1,4 @@
---// Create the main GUI
+--// Create GUI elements
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local CloseButton = Instance.new("TextButton")
@@ -6,7 +6,7 @@ local PlayerInput = Instance.new("TextBox")
 local TpButton = Instance.new("TextButton")
 local OpenIcon = Instance.new("TextButton")
 
---// Parent GUI to CoreGui (bypasses visibility)
+--// Parent GUI
 ScreenGui.Parent = game.CoreGui
 ScreenGui.Name = "TeleportGUI"
 
@@ -28,7 +28,7 @@ CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 CloseButton.TextColor3 = Color3.new(1, 1, 1)
 CloseButton.Parent = MainFrame
 
---// Username Input
+--// Player Username Input
 PlayerInput.Name = "PlayerInput"
 PlayerInput.PlaceholderText = "Player username"
 PlayerInput.Size = UDim2.new(0, 260, 0, 40)
@@ -38,7 +38,7 @@ PlayerInput.TextColor3 = Color3.new(1, 1, 1)
 PlayerInput.ClearTextOnFocus = false
 PlayerInput.Parent = MainFrame
 
---// Teleport Button
+--// TP Button
 TpButton.Name = "TpButton"
 TpButton.Text = "🔘 Tp to player"
 TpButton.Size = UDim2.new(0, 260, 0, 40)
@@ -47,7 +47,7 @@ TpButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 TpButton.TextColor3 = Color3.new(1, 1, 1)
 TpButton.Parent = MainFrame
 
---// Open Icon Button (Initially hidden)
+--// Open Icon
 OpenIcon.Name = "OpenIcon"
 OpenIcon.Text = "🧭"
 OpenIcon.Size = UDim2.new(0, 40, 0, 40)
@@ -57,7 +57,7 @@ OpenIcon.TextColor3 = Color3.new(1, 1, 1)
 OpenIcon.Visible = false
 OpenIcon.Parent = ScreenGui
 
---// Close and open toggle
+--// Close/Open Behavior
 CloseButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
     OpenIcon.Visible = true
@@ -68,17 +68,21 @@ OpenIcon.MouseButton1Click:Connect(function()
     OpenIcon.Visible = false
 end)
 
---// Teleport function
+--// TP Logic
 TpButton.MouseButton1Click:Connect(function()
-    local playerName = PlayerInput.Text
-    local targetPlayer = game.Players:FindFirstChild(playerName)
+    local username = PlayerInput.Text
+    local targetPlayer = game.Players:FindFirstChild(username)
     local localPlayer = game.Players.LocalPlayer
 
     if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
         if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            localPlayer.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame
+            local root = targetPlayer.Character.HumanoidRootPart
+            local offsetBehind = root.CFrame.LookVector * -3
+            local offsetAbove = Vector3.new(0, 2, 0)
+            local newPos = root.Position + offsetBehind + offsetAbove
+            localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(newPos)
         end
     else
-        warn("Invalid player name or player is not loaded.")
+        warn("Invalid or missing player.")
     end
 end)
